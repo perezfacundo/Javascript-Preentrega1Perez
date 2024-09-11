@@ -1,0 +1,16 @@
+{
+  "name": "javascript-preentrega1perez",
+  "version": "1.0.0",
+  "description": "Con esta aplicacion podras pedirle a una aplicacion de consola que genere una clave. La aplicacion preguntara cuantos caracteres deseas que tenga. Que tipos de caracteres, etc.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "inquirer": "^10.2.2"
+  }
+}
