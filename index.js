@@ -2,7 +2,30 @@ import inquirer from "inquirer";
 import clipboardy from "clipboardy"
 import chalk from "chalk"
 
-let abort = false
+let abort = true
+let accion = ""
+
+const darBienvenida = () => {
+  console.log("Bienvenido/a !")
+}
+
+const queAccionRealizar = () => {
+  
+  inquirer.prompt({
+    'type': 'list',
+    'name': 'accion',
+    'message': "Que deseas hacer ?",
+    'choices': ['Quiero generar una clave', 'Quiero validar una clave']
+  })
+  .then(answers => {
+    console.log(answers.accion)
+    return answers.accion
+  })
+} 
+
+const validarClave = () => {
+
+}
 
 const generarClave = (base, cantCaracteres) => {
   let clave = ""
@@ -13,8 +36,8 @@ const generarClave = (base, cantCaracteres) => {
   return clave
 }
 
-const generarBase = () => {
-  let opciones = [
+const solicitarParametros = () => {
+  let parametros = [
     {
       name: "mayusculas",
       value: 'mayusculas',
@@ -43,27 +66,27 @@ const generarBase = () => {
       },
       {
         type: "checkbox",
-        name: "opciones",
+        name: "parametros",
         message: "Selecciona segun tus preferencias. Deseas incluir:",
-        choices: opciones,
+        choices: parametros,
       },
     ])
     .then((answers) => {
       let cantCaracteres = answers.cantCaracteres
       let base = "abcdegfhijklmnopqrstuvwxyz"
 
-      for (let i = 0; i < answers.opciones.length; i++) {
-        if (answers.opciones[i] == 'mayusculas') {
+      for (let i = 0; i < answers.parametros.length; i++) {
+        if (answers.parametros[i] == 'mayusculas') {
           let mayusculas = "ABCDEGFGHIJKLMNOPQRSTUVXYZ"
           base += mayusculas
         }
 
-        if (answers.opciones[i] == 'numeros') {
+        if (answers.parametros[i] == 'numeros') {
           let numeros = "0123456789"
           base += numeros
         }
 
-        if (answers.opciones[i] == 'simbolos') {
+        if (answers.parametros[i] == 'simbolos') {
           let simbolos = "!@#$%^&*()_+-=[]{};:',<.>/?"
           base += simbolos
         }
@@ -78,8 +101,32 @@ const generarBase = () => {
     });
 }
 
-generarBase()
+const preguntar = () => {
+  inquirer.prompt({
+    'type':'confirm',
+    'name':'continuar',
+    'message':'Desea cerrar el programa ?'
+  })
+  .then(answers => {
+    if (answers.continuar) {
+      abort = false
+    } else {
+      abort = true
+    }
+  })
+}
 
-// do{
-//   generarBase()
-// }while(abort = false)
+// Funcionamiento general 
+darBienvenida()
+
+while(abort = false){
+  accion = queAccionRealizar()
+
+  if (accion == 'Quiero generar una clave') {
+    solicitarParametros()
+  } else {
+    validarClave()
+  }
+
+  preguntar()
+}
