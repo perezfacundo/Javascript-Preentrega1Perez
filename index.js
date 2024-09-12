@@ -1,53 +1,52 @@
-import inquirer from "inquirer"
-import clipboardy from "clipboardy"
-import chalk from "chalk"
-
-let accion = ""
-let parametros = [
-  {
-    name: "mayusculas",
-    value: 'mayusculas',
-  },
-  {
-    name: "numeros",
-    value: 'numeros',
-  },
-  {
-    name: "simbolos",
-    value: 'simbolos',
-  },
-];
+import inquirer from "inquirer";
+import clipboardy from "clipboardy";
+import chalk from "chalk";
 
 const darBienvenida = () => {
-  console.log("Bienvenido/a !")
-}
+  console.log("Bienvenido/a !");
+};
 
-const queAccionRealizar = () => {
-  inquirer.prompt({
-    'type': 'list',
-    'name': 'accion',
-    'message': "Que deseas hacer ?",
-    'choices': ['Quiero generar una clave', 'Quiero validar una clave']
-  })
-    .then(answers => {
-      return answers.accion
+const queAccionRealizar = async () => {
+  const { accion } = await inquirer
+    .prompt({
+      type: "list",
+      name: "accion",
+      message: "Que deseas hacer ?",
+      choices: ["Quiero generar una clave", "Quiero validar una clave"],
     })
-}
+    .then((answers) => {
+      console.log(answers.accion);
+      return answers.accion;
+    });
+};
 
-const validarClave = () => {
-
-}
+const validarClave = () => {};
 
 const generarClave = (base, cantCaracteres) => {
-  let clave = ""
+  let clave = "";
   for (let i = 0; i < cantCaracteres; i++) {
-    let random = Math.floor(Math.random() * base.length)
-    clave += base.charAt(random)
+    let random = Math.floor(Math.random() * base.length);
+    clave += base.charAt(random);
   }
-  return clave
-}
+  return clave;
+};
 
 const solicitarParametros = () => {
+  let parametros = [
+    {
+      name: "mayusculas",
+      value: "mayusculas",
+    },
+    {
+      name: "numeros",
+      value: "numeros",
+    },
+    {
+      name: "simbolos",
+      value: "simbolos",
+    },
+  ];
+
   inquirer
     .prompt([
       {
@@ -68,61 +67,60 @@ const solicitarParametros = () => {
       },
     ])
     .then((answers) => {
-      let cantCaracteres = answers.cantCaracteres
-      let base = "abcdegfhijklmnopqrstuvwxyz"
+      let cantCaracteres = answers.cantCaracteres;
+      let base = "abcdegfhijklmnopqrstuvwxyz";
 
       for (let i = 0; i < answers.parametros.length; i++) {
-        if (answers.parametros[i] == 'mayusculas') {
-          let mayusculas = "ABCDEGFGHIJKLMNOPQRSTUVXYZ"
-          base += mayusculas
+        if (answers.parametros[i] == "mayusculas") {
+          let mayusculas = "ABCDEGFGHIJKLMNOPQRSTUVXYZ";
+          base += mayusculas;
         }
 
-        if (answers.parametros[i] == 'numeros') {
-          let numeros = "0123456789"
-          base += numeros
+        if (answers.parametros[i] == "numeros") {
+          let numeros = "0123456789";
+          base += numeros;
         }
 
-        if (answers.parametros[i] == 'simbolos') {
-          let simbolos = "!@#$%^&*()_+-=[]{};:',<.>/?"
-          base += simbolos
+        if (answers.parametros[i] == "simbolos") {
+          let simbolos = "!@#$%^&*()_+-=[]{};:',<.>/?";
+          base += simbolos;
         }
       }
 
-      clipboardy.writeSync(generarClave(base, cantCaracteres))
-      console.log(chalk.bgGreen('Clave copiada al portapapeles. Haz click derecho donde necesites pegarla y listo !'))
+      clipboardy.writeSync(generarClave(base, cantCaracteres));
+      console.log(chalk.bgGreen("Clave copiada al portapapeles !"));
     })
     .catch((error) => {
-      console.error(chalk.bgRed('Ocurrio un error al generar la clave.'));
-      return error
+      console.error(chalk.bgRed("Ocurrio un error al generar la clave."));
+      return error;
     });
-}
+};
 
-const preguntar = () => {
-  inquirer.prompt({
-    'type': 'confirm',
-    'name': 'continuar',
-    'message': 'Desea cerrar el programa ?'
-  })
-    .then(answers => {
-      if (answers.continuar) {
-        return false
-      } else {
-        return true
-      }
+const preguntar = async () => {
+  const { continuar } = await inquirer
+    .prompt({
+      type: "confirm",
+      name: "continuar",
+      message: "Desea cerrar el programa ?",
     })
-}
+    .then(() => {
+      return continuar;
+    });
+};
 
 // Funcionamiento general
-let abort = false
-while (!abort) {
-  darBienvenida()
-  accion = queAccionRealizar()
-  if (accion = 'Quiero generar una clave') {
-    solicitarParametros()
-  } else {
-    validarClave()
-  }
-  abort = preguntar()
-  console.log(abort)
-}
+let abort = false;
+let accion = "";
 
+while ((abort = true)) {
+  darBienvenida();
+  accion = await queAccionRealizar();
+
+  if (accion == "Quiero generar una clave") {
+    solicitarParametros();
+  } else {
+    validarClave();
+  }
+
+  abort = await preguntar();
+}
