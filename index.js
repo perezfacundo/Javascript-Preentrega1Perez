@@ -7,7 +7,7 @@ const darBienvenida = () => {
 };
 
 const queAccionRealizar = async () => {
-  const { accion } = await inquirer
+  const accion = await inquirer
     .prompt({
       type: "list",
       name: "accion",
@@ -20,10 +20,11 @@ const queAccionRealizar = async () => {
     });
 };
 
-const validarClave = () => {};
+const validarClave =  () => {
+  return true
+};
 
 const generarClave = (base, cantCaracteres) => {
-  let clave = "";
   for (let i = 0; i < cantCaracteres; i++) {
     let random = Math.floor(Math.random() * base.length);
     clave += base.charAt(random);
@@ -31,7 +32,7 @@ const generarClave = (base, cantCaracteres) => {
   return clave;
 };
 
-const solicitarParametros = () => {
+const solicitarParametros = async () => {
   let parametros = [
     {
       name: "mayusculas",
@@ -109,17 +110,17 @@ const preguntar = async () => {
 };
 
 // Funcionamiento general
-let abort = false;
+let abort = 'n';
 let accion = "";
 
-while ((abort = true)) {
+while (abort == 'n') {
   darBienvenida();
   accion = await queAccionRealizar();
 
   if (accion == "Quiero generar una clave") {
-    solicitarParametros();
+    accion = await solicitarParametros();
   } else {
-    validarClave();
+    accion = validarClave();
   }
 
   abort = await preguntar();
